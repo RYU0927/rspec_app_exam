@@ -12,12 +12,15 @@ RSpec.describe 'Task', type: :system do
         expect(current_path).to eq project_tasks_path(project)
       end
 
-      it 'Project詳細からTask一覧ページにアクセスした場合、Taskが表示されること' do
+      it 'Project詳細からTask一覧ページにアクセスした場合、Taskが表示されること', js: true do
         visit project_path(project)
         click_link 'View Todos'
-        expect(page).to have_content task.title
-        expect(Task.count).to eq 1
-        expect(current_path).to eq project_tasks_path(project)
+        handle = page.driver.browser.window_handles.last
+        page.driver.browser.switch_to.window(handle) do
+          expect(page).to have_content task.title
+          expect(Task.count).to eq 1
+          expect(current_path).to eq project_tasks_path(project)
+        end
       end
     end
   end
