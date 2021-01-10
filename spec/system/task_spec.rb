@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Task', type: :system do
   let(:project){create(:project)}
+  let!(:task){create(:task, project_id: project.id)}
   describe 'Task一覧' do
-    let(:task){create(:task,project_id: project.id)}
     context '正常系' do
       it '一覧ページにアクセスした場合、Taskが表示されること' do
         visit project_tasks_path(project)
@@ -33,14 +33,13 @@ RSpec.describe 'Task', type: :system do
         fill_in 'Title', with: 'test'
         click_button 'Create Task'
         expect(page).to have_content('Task was successfully created.')
-        expect(Task.count).to eq 1
-        expect(current_path).to eq '/projects/1/tasks/1'
+        expect(Task.count).to eq 2
+        expect(current_path).to eq '/projects/1/tasks/2'
       end
     end
   end
 
   describe 'Task詳細' do
-    let(:task){create(:task,project_id: project.id)}
     context '正常系' do
       it 'Taskが表示されること' do
         visit project_task_path(project, task)
@@ -53,14 +52,13 @@ RSpec.describe 'Task', type: :system do
   end
 
   describe 'Task編集' do
-    let(:task){create(:task, project_id: project.id)}
     context '正常系' do
       it 'Taskを編集した場合、一覧画面で編集後の内容が表示されること' do
         visit edit_project_task_path(project, task)
         fill_in 'Deadline', with: Time.current
         click_button 'Update Task'
         click_link 'Back'
-        expect(find('.task_list')).to have_content(Time.current.strftime('%-m/%d %H:%M'))
+        expect(find('.task_list')).to have_content(short_time(Time.current))
         expect(current_path).to eq project_tasks_path(project)
       end
 
@@ -88,7 +86,6 @@ RSpec.describe 'Task', type: :system do
   describe 'Task削除' do
     context '正常系' do
       it 'Taskが削除されること' do
-        task = FactoryBot.create(:task, project_id: project.id)
         visit project_tasks_path(project)
         click_link 'Destroy'
         page.driver.browser.switch_to.alert.accept
