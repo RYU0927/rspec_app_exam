@@ -2,8 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Task', type: :system do
   let(:project){ create(:project) }
-  let!(:task){ create(:task) }
+
   describe 'Task一覧' do
+    let!(:task){ create(:task) }
     context '正常系' do
       it '一覧ページにアクセスした場合、Taskが表示されること' do
         visit project_tasks_path(project)
@@ -33,13 +34,14 @@ RSpec.describe 'Task', type: :system do
         fill_in 'Title', with: 'test'
         click_button 'Create Task'
         expect(page).to have_content('Task was successfully created.')
-        expect(Task.count).to eq 2
-        expect(current_path).to eq '/projects/1/tasks/2'
+        expect(Task.count).to eq 1
+        expect(current_path).to eq '/projects/1/tasks/1'
       end
     end
   end
 
   describe 'Task詳細' do
+    let!(:task){ create(:task) }
     context '正常系' do
       it 'Taskが表示されること' do
         visit project_task_path(project, task)
@@ -52,6 +54,7 @@ RSpec.describe 'Task', type: :system do
   end
 
   describe 'Task編集' do
+    let!(:task){ create(:task) }
     context '正常系' do
       it 'Taskを編集した場合、一覧画面で編集後の内容が表示されること' do
         visit edit_project_task_path(project, task)
@@ -84,6 +87,7 @@ RSpec.describe 'Task', type: :system do
   end
 
   describe 'Task削除' do
+    let!(:task){ create(:task) }
     context '正常系' do
       it 'Taskが削除されること' do
         visit project_tasks_path(project)
