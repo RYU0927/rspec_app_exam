@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Task', type: :system do
-  let(:project){create(:project)}
-  let!(:task){create(:task, project_id: project.id)}
+  let(:project){ create(:project) }
+  let!(:task){ create(:task) }
   describe 'Task一覧' do
     context '正常系' do
       it '一覧ページにアクセスした場合、Taskが表示されること' do
